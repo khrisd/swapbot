@@ -129,7 +129,7 @@ namespace swapbot
             {
                 using (WebClient wc = new WebClient())
                 {
-                    jstring = wc.DownloadString("http://bitmarket.pl/json/swapBTC/swap.json");
+                    jstring = wc.DownloadString("http://bitmarket.pl/json/swapLTC/swap.json");
                 }
             }
             catch (Exception e)
@@ -148,9 +148,9 @@ namespace swapbot
             ustaw = Math.Truncate(ustaw * 10000) / 10000;//zaokrąglam do 4 miejsc.
             string newRate = ustaw.ToString(cult);
 
-            //swaplist currency  BTC ->id
+            //swaplist currency  LTC ->id
             NameValueCollection par = new NameValueCollection();
-            par.Add("currency", "BTC");
+            par.Add("currency", "LTC");
             string resp = postuj("swapList", par);
             if (error) return; //kończymy jak błąd
             dynamic jresp = JsonConvert.DeserializeObject(resp);
@@ -174,11 +174,11 @@ namespace swapbot
                     //swapClose id currency -> balances
                     par.Clear();
                     par.Add("id", id);
-                    par.Add("currency", "BTC");
+                    par.Add("currency", "LTC");
                     resp = postuj("swapClose", par); //zamknij swapa
                     if (error) return; //kończymy jak błąd
                     jresp = JsonConvert.DeserializeObject(resp);
-                    stan = jresp.data.balances.available.BTC;//ile masz BTC
+                    stan = jresp.data.balances.available.LTC;//ile masz LTC
                 }
                 else //jak nie to sprawdzam stan konta
                 {
@@ -186,13 +186,13 @@ namespace swapbot
                     resp = postuj("info", null);
                     if (error) return; //kończymy jak błąd
                     jresp = JsonConvert.DeserializeObject(resp);
-                    stan = jresp.data.balances.available.BTC;
+                    stan = jresp.data.balances.available.LTC;
                 }
-                if (Convert.ToDouble(stan, cult) > 0.1) //jezeli mamy powyżej 0.1BTC wolnego
+                if (Convert.ToDouble(stan, cult) > 0.1) //jezeli mamy powyżej 0.1LTC wolnego
                 {
                     //swapOpen currency amount rate -> id balances
                     par.Clear();
-                    par.Add("currency", "BTC");
+                    par.Add("currency", "LTC");
                     par.Add("amount", stan);
                     par.Add("rate", newRate);
                     resp = postuj("swapOpen", par);//OPEN SESAME!
